@@ -1,0 +1,13 @@
+services:
+  main-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: toll-roads-api
+    env_file:
+      - .env
+    ports: 
+      - ${API_PORT}:${API_PORT}
+    volumes:
+      - .:/app/
+    command: "python3 manage.py runserver 0.0.0.0:${API_PORT}"
