@@ -35,6 +35,8 @@ DEBUG = True if os.getenv('API_DEBUG') == 'True' else False
 
 ALLOWED_HOSTS = os.getenv('API_ALLOWED_HOSTS').split(' ')
 
+CORS_ALLOWED_ORIGINS = os.getenv('API_CORS_ALLOWED_ORIGINS').split(' ')
+
 
 # Application definition
 
@@ -45,12 +47,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
