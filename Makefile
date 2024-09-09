@@ -31,12 +31,12 @@ pg-logs:
 
 .PHONY: migr
 migr:
-	${EXEC} ${APP_CONTAINER} ${MANAGE_PY} migrate
+	${EXEC} ${API_CONTAINER} ${MANAGE_PY} migrate
 
 .PHONY: make-migr
 make-migr:
-	${EXEC} ${APP_CONTAINER} ${MANAGE_PY} makemigrations
+	${EXEC} ${API_CONTAINER} ${MANAGE_PY} makemigrations
 
 .PHONY: superuser
 superuser:
-	${EXEC} ${APP_CONTAINER} ${MANAGE_PY} createsuperuser
+	${EXEC} ${API_CONTAINER} ${MANAGE_PY} createsuperuser
