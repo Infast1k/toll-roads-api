@@ -40,3 +40,7 @@ make-migr:
 .PHONY: superuser
 superuser:
 	${EXEC} ${API_CONTAINER} ${MANAGE_PY} createsuperuser
+
+.PHONY: test
+test:
+	${EXEC} ${API_CONTAINER} ${MANAGE_PY} test
