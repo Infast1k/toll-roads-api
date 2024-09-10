@@ -84,6 +84,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 
+REST_FRAMEWORK = {
+    'DATE_FORMAT': r"%d.%m.%Y",
+    'DATETIME_FORMAT': r"%d.%m.%Y %H:%M:%S",
+}
+
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
