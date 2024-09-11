@@ -36,7 +36,9 @@ class RegisterCommandTests(TestCase):
 
         self.assertEqual(company.name, self.valid_data.get("name"))
         self.assertEqual(company.account.email, self.valid_data.get("email"))
-        self.assertTrue(company.account.check_password(self.valid_data.get("password")))
+        self.assertTrue(company.account.check_password(
+            self.valid_data.get("password")
+        ))
 
     def test_unsuccessfully_register_command(self):
         command = RegisterCompanyCommand(
