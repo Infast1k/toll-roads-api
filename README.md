@@ -24,6 +24,7 @@
 * `make api-logs` - follow the logs in api container
 * `make api-exec` - exec bash shell in api container
 * `make pg-logs` - follow the logs in postgres container
+* `make redis-logs` - follow the logs in redis container
 
 ### Most Used Django Specific Commands
 
