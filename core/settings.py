@@ -164,3 +164,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+JWT_SECRET = os.getenv('JWT_SECRET')
+JWT_EXP_IN_MINUTES = int(os.getenv('JWT_EXP_IN_MINUTES'))
+REFRESH_EXP_IN_DAYS = int(os.getenv('REFRESH_EXP_IN_DAYS'))
