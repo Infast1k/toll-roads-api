@@ -1,5 +1,6 @@
 .idea/
 .vscode/
 postgres-data/
+redis-data/
 __pycache__/
 .env

@@ -105,6 +105,22 @@ DATABASES = {
 }
 
 
+# Caching
+# https://docs.djangoproject.com/en/5.1/topics/cache/#redis
+
+redis_connection_string = "redis://{host}:{port}/1".format(
+    host=os.getenv('REDIS_HOST'),
+    port=os.getenv('REDIS_PORT'),
+)
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': redis_connection_string,
+    }
+}
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
