@@ -14,6 +14,7 @@ python-dotenv = "^1.0.1"
 psycopg2-binary = "^2.9.9"
 redis = "^5.0.8"
 pyjwt = "^2.9.0"
+drf-standardized-errors = "^0.14.1"
 
 
 [tool.poetry.group.dev.dependencies]

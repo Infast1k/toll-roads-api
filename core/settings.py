@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_standardized_errors',
     'corsheaders',
     'rest_framework',
     'company',
@@ -84,7 +85,13 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 
+DRF_STANDARDIZED_ERRORS = {
+    "ENABLE_IN_DEBUG_FOR_UNHANDED_EXCEPTIONS": True,
+}
+
+
 REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'drf_standardized_errors.handler.exception_handler',
     'DATE_FORMAT': r"%d.%m.%Y",
     'DATETIME_FORMAT': r"%d.%m.%Y %H:%M:%S",
 }
