@@ -94,6 +94,9 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'drf_standardized_errors.handler.exception_handler',
     'DATE_FORMAT': r"%d.%m.%Y",
     'DATETIME_FORMAT': r"%d.%m.%Y %H:%M:%S",
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'company.backends.CustomAuthBackend',
+    ]
 }
 
 
