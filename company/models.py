@@ -62,6 +62,7 @@ class Company(models.Model):
     name = models.CharField(
         max_length=75,
         unique=True,
+        db_index=True,
     )
     account = models.OneToOneField(
         to=Account,
