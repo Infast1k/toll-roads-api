@@ -13,6 +13,7 @@
    ```bash
    git clone https://github.com/your_username/your_repository.git &&
    cd your_repository
+   ```
 
 2. Install all required packages in `Requirements` section.
 
@@ -31,3 +32,8 @@
 * `make migr` - apply all made migrations
 * `make make-migr` - make migrations to models
 * `make superuser` - create admin user
+
+## TODO
+
+* Remake auth application (company)
+   * Change sub in JWT Token
