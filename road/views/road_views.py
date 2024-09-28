@@ -12,6 +12,8 @@ from road.commands import (
     GetAllRoadsCommandHandler,
     GetRoadByOidCommand,
     GetRoadByOidCommandHandler,
+    DeleteRoadByOidCommand,
+    DeleteRoadByOidCommandHandler,
 )
 from road.serializers import (
     InputCreateRoadSerializer,
@@ -66,3 +68,14 @@ class RoadDetailView(APIView):
         response_data = OutupRoadSerializer(road).data
 
         return Response(response_data, status=status.HTTP_200_OK)
+
+    def delete(self, request: HttpRequest, road_oid: UUID) -> Response:
+        input_serializer = InputGetRoadByOidSerializer(data={
+            "road_oid": road_oid,
+        })
+        input_serializer.is_valid(raise_exception=True)
+
+        command = DeleteRoadByOidCommand(road_oid=road_oid)
+        DeleteRoadByOidCommandHandler.handle(command=command)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
