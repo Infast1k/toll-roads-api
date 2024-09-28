@@ -1,3 +1,4 @@
+from uuid import UUID
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import HttpRequest
@@ -9,11 +10,15 @@ from road.commands import (
     CreateRoadCommandHandler,
     GetAllRoadsCommand,
     GetAllRoadsCommandHandler,
+    GetRoadByOidCommand,
+    GetRoadByOidCommandHandler,
 )
 from road.serializers import (
     InputCreateRoadSerializer,
+    InputGetRoadByOidSerializer,
     OutputCreateRoadSerializer,
     OutputGetAllRoadsSerializer,
+    OutupRoadSerializer,
 )
 
 
@@ -44,3 +49,20 @@ class RoadsView(APIView):
         response_data = OutputCreateRoadSerializer(road).data
 
         return Response(response_data, status=status.HTTP_201_CREATED)
+
+
+class RoadDetailView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request: HttpRequest, road_oid: UUID) -> Response:
+        input_serializer = InputGetRoadByOidSerializer(data={
+            "road_oid": road_oid,
+        })
+        input_serializer.is_valid(raise_exception=True)
+
+        command = GetRoadByOidCommand(road_oid=road_oid)
+        road = GetRoadByOidCommandHandler.handle(command=command)
+
+        response_data = OutupRoadSerializer(road).data
+
+        return Response(response_data, status=status.HTTP_200_OK)

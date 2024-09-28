@@ -6,6 +6,10 @@ from road.commands.get_all_roads_commands import (
     GetAllRoadsCommand,
     GetAllRoadsCommandHandler
 )
+from road.commands.get_road_by_oid import (
+    GetRoadByOidCommand,
+    GetRoadByOidCommandHandler
+)
 
 
 __all__ = (
@@ -13,4 +17,6 @@ __all__ = (
     "CreateRoadCommandHandler",
     "GetAllRoadsCommand",
     "GetAllRoadsCommandHandler",
+    "GetRoadByOidCommand",
+    "GetRoadByOidCommandHandler",
 )
