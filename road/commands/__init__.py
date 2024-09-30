@@ -10,6 +10,10 @@ from road.commands.get_road_by_oid import (
     GetRoadByOidCommand,
     GetRoadByOidCommandHandler
 )
+from road.commands.update_road_command import (
+    UpdateRoadCommand,
+    UpdateRoadCommandHandler,
+)
 from road.commands.delete_road_by_oid import (
     DeleteRoadByOidCommand,
     DeleteRoadByOidCommandHandler,
@@ -23,6 +27,8 @@ __all__ = (
     "GetAllRoadsCommandHandler",
     "GetRoadByOidCommand",
     "GetRoadByOidCommandHandler",
+    "UpdateRoadCommand",
+    "UpdateRoadCommandHandler",
     "DeleteRoadByOidCommand",
     "DeleteRoadByOidCommandHandler",
 )

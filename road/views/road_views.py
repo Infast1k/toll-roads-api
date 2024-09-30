@@ -12,12 +12,15 @@ from road.commands import (
     GetAllRoadsCommandHandler,
     GetRoadByOidCommand,
     GetRoadByOidCommandHandler,
+    UpdateRoadCommand,
+    UpdateRoadCommandHandler,
     DeleteRoadByOidCommand,
     DeleteRoadByOidCommandHandler,
 )
 from road.serializers import (
     InputCreateRoadSerializer,
     InputGetRoadByOidSerializer,
+    InputUpdateRoadSerializer,
     OutputCreateRoadSerializer,
     OutputGetAllRoadsSerializer,
     OutupRoadSerializer,
@@ -64,6 +67,25 @@ class RoadDetailView(APIView):
 
         command = GetRoadByOidCommand(road_oid=road_oid)
         road = GetRoadByOidCommandHandler.handle(command=command)
+
+        response_data = OutupRoadSerializer(road).data
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    def put(self, request: HttpRequest, road_oid: UUID) -> Response:
+        input_serializer = InputUpdateRoadSerializer(data={
+            "oid": road_oid,
+            "name": request.data.get("name", None),
+            "locations": request.data.get("locations", None),
+        })
+        input_serializer.is_valid(raise_exception=True)
+
+        command = UpdateRoadCommand(
+            oid=input_serializer.validated_data["oid"],
+            name=input_serializer.validated_data["name"],
+            locations=input_serializer.validated_data["locations"],
+        )
+        road = UpdateRoadCommandHandler.handle(command=command)
 
         response_data = OutupRoadSerializer(road).data
 
