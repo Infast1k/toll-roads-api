@@ -1,15 +1,11 @@
-from uuid import uuid4
-
 from django.db import models
 
+from core.base.models import BaseModel
 
-class Road(models.Model):
-    oid = models.UUIDField(
-        primary_key=True,
-        default=uuid4,
-        db_index=True,
-        editable=False,
-    )
+
+class Road(BaseModel):
+    """Model for storing data about roads."""
+
     name = models.CharField(
         max_length=255,
         unique=True,
@@ -25,9 +21,6 @@ class Road(models.Model):
         db_index=True,
     )
     # TODO: think about metadata like distance, duration, max speed and etc.
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-    )
 
     def __str__(self) -> str:
         return f"{self.name} - {self.company.name}"

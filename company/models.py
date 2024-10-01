@@ -1,21 +1,14 @@
-from uuid import uuid4
-
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 
 from company.managers import AccountManager
+from core.base.models import BaseModel
 
 
-class Account(AbstractBaseUser, PermissionsMixin):
+class Account(BaseModel, AbstractBaseUser, PermissionsMixin):
     """Model for storing credentials for companies."""
 
-    oid = models.UUIDField(
-        primary_key=True,
-        default=uuid4,
-        db_index=True,
-        editable=False,
-    )
     email = models.EmailField(
         unique=True,
         db_index=True,
@@ -33,9 +26,6 @@ class Account(AbstractBaseUser, PermissionsMixin):
         blank=True,
         default=False,
     )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-    )
 
     objects = AccountManager()
     USERNAME_FIELD = "email"
@@ -50,15 +40,9 @@ class Account(AbstractBaseUser, PermissionsMixin):
         ordering = ["-created_at"]
 
 
-class Company(models.Model):
+class Company(BaseModel):
     """Model for storing data about companies without credentials."""
 
-    oid = models.UUIDField(
-        primary_key=True,
-        default=uuid4,
-        db_index=True,
-        editable=False,
-    )
     name = models.CharField(
         max_length=75,
         unique=True,
@@ -68,9 +52,6 @@ class Company(models.Model):
         to=Account,
         on_delete=models.CASCADE,
         related_name="company",
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
     )
 
     def __str__(self) -> str:
