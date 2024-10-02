@@ -65,7 +65,11 @@ class RoadDetailView(APIView):
         })
         input_serializer.is_valid(raise_exception=True)
 
-        command = GetRoadByOidCommand(road_oid=road_oid)
+        company_name = request.user.company.name
+        command = GetRoadByOidCommand(
+            road_oid=road_oid,
+            company_name=company_name,
+        )
         road = GetRoadByOidCommandHandler.handle(command=command)
 
         response_data = OutupRoadSerializer(road).data
@@ -80,10 +84,12 @@ class RoadDetailView(APIView):
         })
         input_serializer.is_valid(raise_exception=True)
 
+        company_name = request.user.company.name
         command = UpdateRoadCommand(
             oid=input_serializer.validated_data["oid"],
             name=input_serializer.validated_data["name"],
             locations=input_serializer.validated_data["locations"],
+            company_name=company_name,
         )
         road = UpdateRoadCommandHandler.handle(command=command)
 
@@ -97,7 +103,11 @@ class RoadDetailView(APIView):
         })
         input_serializer.is_valid(raise_exception=True)
 
-        command = DeleteRoadByOidCommand(road_oid=road_oid)
+        company_name = request.user.company.name
+        command = DeleteRoadByOidCommand(
+            road_oid=road_oid,
+            company_name=company_name,
+        )
         DeleteRoadByOidCommandHandler.handle(command=command)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
