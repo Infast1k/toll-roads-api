@@ -14,7 +14,7 @@ services:
       - ${API_PORT}:${API_PORT}
     volumes:
       - ./:/app/
-    command: bash ./entrypoint.sh
+    command: python manage.py runserver 0.0.0.0:${API_PORT}
 
   adminer:
     image: adminer
