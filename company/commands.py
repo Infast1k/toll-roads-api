@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import jwt
 from django.conf import settings
@@ -82,3 +82,45 @@ class RegisterCompanyCommandHandler(
         # TODO: send email message for account activation
 
         return company
+
+
+@dataclass(frozen=True)
+class RefreshCommand(BaseCommand):
+    refresh_token: UUID
+
+
+@dataclass(eq=False, frozen=True)
+class RefreshCommandHandler(BaseCommandHandler[RefreshCommand, AuthTokens]):
+    @staticmethod
+    def handle(command: RefreshCommand) -> AuthTokens:
+        token = str(command.refresh_token)
+
+        account_oid = cache.get(key=token)
+        if account_oid is None:
+            raise ValueError("Invalid refresh token")
+
+        cache.delete(key=token)
+
+        access_token = jwt.encode(
+            payload={
+                "sub": str(account_oid),
+                "exp": datetime.now() + timedelta(
+                    minutes=settings.JWT_EXP_IN_MINUTES,
+                ),
+            },
+            key=settings.JWT_SECRET,
+            algorithm="HS256",
+        )
+
+        refresh_token = uuid4()
+
+        cache.set(
+            key=str(refresh_token),
+            value=str(account_oid),
+            timeout=settings.REFRESH_EXP_IN_DAYS,
+        )
+
+        return AuthTokens(
+            access_token=access_token,
+            refresh_token=refresh_token,
+        )

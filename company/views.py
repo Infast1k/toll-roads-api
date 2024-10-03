@@ -6,11 +6,14 @@ from rest_framework.views import APIView
 from company.commands import (
     LoginCommand,
     LoginCommandHandler,
+    RefreshCommand,
+    RefreshCommandHandler,
     RegisterCompanyCommand,
     RegisterCompanyCommandHandler,
 )
 from company.serializers import (
     InputLoginSerializer,
+    InputRefreshSerializer,
     InputRegisterCompanySerializer,
     OutputCompanySerializer,
     OutputLoginSerializer,
@@ -44,6 +47,21 @@ class LoginCompanyView(APIView):
             password=login_serializer.validated_data["password"],
         )
         tokens = LoginCommandHandler.handle(command=command)
+
+        response_data = OutputLoginSerializer(tokens).data
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+class RefreshTokensView(APIView):
+    def post(self, request: HttpRequest) -> Response:
+        refresh_serializer = InputRefreshSerializer(data=request.data)
+        refresh_serializer.is_valid(raise_exception=True)
+
+        command = RefreshCommand(
+            refresh_token=refresh_serializer.validated_data["refresh_token"],
+        )
+        tokens = RefreshCommandHandler.handle(command=command)
 
         response_data = OutputLoginSerializer(tokens).data
 

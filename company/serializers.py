@@ -69,3 +69,7 @@ class OutputCompanySerializer(serializers.ModelSerializer):
             "account",
             "created_at",
         )
+
+
+class InputRefreshSerializer(serializers.Serializer):
+    refresh_token = serializers.UUIDField()
