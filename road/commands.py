@@ -3,11 +3,25 @@ from typing import Optional
 from uuid import UUID
 
 from django.db.models.query import QuerySet
-from rest_framework import exceptions
 
 from company.models import Company
 from core.base.commands import BaseCommand, BaseCommandHandler
 from road.models import Road
+
+
+@dataclass(frozen=True)
+class GetAllRoadsCommand(BaseCommand):
+    company_name: str
+
+
+@dataclass(eq=False, frozen=True)
+class GetAllRoadsCommandHandler(
+    BaseCommandHandler[GetAllRoadsCommand, QuerySet[Road]],
+):
+    @staticmethod
+    def handle(command: GetAllRoadsCommand) -> QuerySet[Road]:
+        roads = Road.objects.filter(company__name=command.company_name)
+        return roads
 
 
 @dataclass(frozen=True)
@@ -33,6 +47,30 @@ class CreateRoadCommandHandler(BaseCommandHandler[CreateRoadCommand, Road]):
 
 
 @dataclass(frozen=True)
+class UpdateRoadCommand(BaseCommand):
+    road_oid: UUID
+    name: Optional[str]
+    locations: Optional[str]
+    company_name: str
+
+
+@dataclass(eq=False, frozen=True)
+class UpdateRoadCommandHandler(BaseCommandHandler[UpdateRoadCommand, Road]):
+    @staticmethod
+    def handle(command: UpdateRoadCommand) -> Road:
+        company_roads = Road.objects.filter(company__name=command.company_name)
+        road = company_roads.get(oid=command.road_oid)
+
+        if command.name is not None:
+            road.name = command.name
+        if command.locations is not None:
+            road.locations = command.locations
+        road.save()
+
+        return road
+
+
+@dataclass(frozen=True)
 class DeleteRoadByOidCommand(BaseCommand):
     road_oid: UUID
     company_name: str
@@ -45,54 +83,6 @@ class DeleteRoadByOidCommandHandler(
     @staticmethod
     def handle(command: DeleteRoadByOidCommand) -> None:
         company_roads = Road.objects.filter(company__name=command.company_name)
-        road = company_roads.filter(oid=command.road_oid).first()
-        if not road:
-            raise exceptions.NotFound(
-                detail=f"road with {command.road_oid} oid not found",
-            )
+        road = company_roads.get(oid=command.road_oid)
 
         road.delete()
-
-
-@dataclass(frozen=True)
-class GetAllRoadsCommand(BaseCommand):
-    company_name: str
-
-
-@dataclass(eq=False, frozen=True)
-class GetAllRoadsCommandHandler(
-    BaseCommandHandler[GetAllRoadsCommand, QuerySet[Road]],
-):
-    @staticmethod
-    def handle(command: GetAllRoadsCommand) -> QuerySet[Road]:
-        roads = Road.objects.filter(company__name=command.company_name)
-        return roads
-
-
-@dataclass(frozen=True)
-class UpdateRoadCommand(BaseCommand):
-    oid: UUID
-    name: Optional[str]
-    locations: Optional[str]
-    company_name: str
-
-
-@dataclass(eq=False, frozen=True)
-class UpdateRoadCommandHandler(BaseCommandHandler[UpdateRoadCommand, Road]):
-    @staticmethod
-    def handle(command: UpdateRoadCommand) -> Road:
-        company_roads = Road.objects.filter(company__name=command.company_name)
-        road = company_roads.filter(oid=command.oid).first()
-
-        if not road:
-            raise exceptions.NotFound(
-                detail=f"road with {command.oid} oid not found",
-            )
-
-        if command.name is not None:
-            road.name = command.name
-        if command.locations is not None:
-            road.locations = command.locations
-        road.save()
-
-        return road

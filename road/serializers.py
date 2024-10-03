@@ -4,6 +4,17 @@ from company.models import Company
 from road.models import Road
 
 
+class OutputRoadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Road
+        fields = (
+            "oid",
+            "name",
+            "locations",
+            "created_at",
+        )
+
+
 class InputCreateRoadSerializer(serializers.Serializer):
     road_name = serializers.CharField()
     road_locations = serializers.CharField()
@@ -39,24 +50,19 @@ class OutputCreateRoadSerializer(serializers.ModelSerializer):
         )
 
 
-class OutputRoadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Road
-        fields = (
-            "oid",
-            "name",
-            "locations",
-            "created_at",
-        )
-
-
 class InputUpdateRoadSerializer(serializers.Serializer):
-    oid = serializers.UUIDField()
+    road_oid = serializers.UUIDField()
     name = serializers.CharField(allow_null=True)
     locations = serializers.CharField(allow_null=True)
+    company_name = serializers.CharField()
 
     def validate(self, attrs):
-        if not Road.objects.filter(oid=attrs["oid"]).exists():
+        company = Company.objects.get(name=attrs["company_name"])
+
+        if not Road.objects.filter(
+            oid=attrs["road_oid"],
+            company=company,
+        ).exists():
             raise serializers.ValidationError(
                 "Road with given oid not found"
             )
@@ -66,9 +72,15 @@ class InputUpdateRoadSerializer(serializers.Serializer):
 
 class InputDeleteRoadSerializer(serializers.Serializer):
     road_oid = serializers.UUIDField()
+    company_name = serializers.CharField()
 
     def validate(self, attrs):
-        if not Road.objects.filter(oid=attrs["road_oid"]).exists():
+        company = Company.objects.get(name=attrs["company_name"])
+
+        if not Road.objects.filter(
+            oid=attrs["road_oid"],
+            company=company,
+        ).exists():
             raise serializers.ValidationError(
                 "Road with given oid not found"
             )

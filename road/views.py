@@ -39,14 +39,19 @@ class RoadsView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
     def post(self, request: HttpRequest) -> Response:
-        input_serializer = InputCreateRoadSerializer(data=request.data)
+        company_name = request.user.company.name
+
+        input_serializer = InputCreateRoadSerializer(data={
+            "road_name": request.data.get("road_name", None),
+            "road_locations": request.data.get("road_locations", None),
+            "company_name": company_name,
+        })
         input_serializer.is_valid(raise_exception=True)
 
         command = CreateRoadCommand(
             road_name=input_serializer.validated_data["road_name"],
             road_locations=input_serializer.validated_data["road_locations"],
-            # TODO: get company name from request
-            company_name=input_serializer.validated_data["company_name"],
+            company_name=company_name,
         )
         road = CreateRoadCommandHandler.handle(command=command)
 
@@ -59,16 +64,18 @@ class RoadDetailView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def put(self, request: HttpRequest, road_oid: UUID) -> Response:
+        company_name = request.user.company.name
+
         input_serializer = InputUpdateRoadSerializer(data={
-            "oid": road_oid,
+            "road_oid": road_oid,
             "name": request.data.get("name", None),
             "locations": request.data.get("locations", None),
+            "company_name": company_name,
         })
         input_serializer.is_valid(raise_exception=True)
 
-        company_name = request.user.company.name
         command = UpdateRoadCommand(
-            oid=input_serializer.validated_data["oid"],
+            road_oid=input_serializer.validated_data["road_oid"],
             name=input_serializer.validated_data["name"],
             locations=input_serializer.validated_data["locations"],
             company_name=company_name,
@@ -80,12 +87,14 @@ class RoadDetailView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
     def delete(self, request: HttpRequest, road_oid: UUID) -> Response:
+        company_name = request.user.company.name
+
         input_serializer = InputDeleteRoadSerializer(data={
             "road_oid": road_oid,
+            "company_name": company_name,
         })
         input_serializer.is_valid(raise_exception=True)
 
-        company_name = request.user.company.name
         command = DeleteRoadByOidCommand(
             road_oid=road_oid,
             company_name=company_name,
