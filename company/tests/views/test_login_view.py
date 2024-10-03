@@ -7,7 +7,7 @@ from company.models import Account
 
 class LoginViewTest(APITestCase):
     def setUp(self):
-        self.url = "/api/v1/sign-in/"
+        self.url = "/api/v1/auth/sign-in/"
 
         self.valid_data = {
             "email": "ZTqZ5@example.com",

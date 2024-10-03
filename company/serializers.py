@@ -3,6 +3,26 @@ from rest_framework import serializers
 from company.models import Account, Company
 
 
+class InputLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        account = Account.objects.filter(email=data["email"]).first()
+
+        if not account:
+            raise serializers.ValidationError("invalid credentials")
+        if not account.check_password(data["password"]):
+            raise serializers.ValidationError("invalid credentials")
+
+        return data
+
+
+class OutputLoginSerializer(serializers.Serializer):
+    access_token = serializers.CharField()
+    refresh_token = serializers.CharField()
+
+
 class _InputRegisterAccountSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=8)
 
@@ -25,7 +45,7 @@ class InputRegisterCompanySerializer(serializers.ModelSerializer):
         )
 
 
-class _OutputRegisterAccountSerializer(serializers.ModelSerializer):
+class OutputAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = (
@@ -38,8 +58,8 @@ class _OutputRegisterAccountSerializer(serializers.ModelSerializer):
         )
 
 
-class OutputRegisterCompanySerializer(serializers.ModelSerializer):
-    account = _OutputRegisterAccountSerializer(many=False)
+class OutputCompanySerializer(serializers.ModelSerializer):
+    account = OutputAccountSerializer(many=False)
 
     class Meta:
         model = Company

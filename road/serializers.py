@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from company.models import Account, Company
+from company.models import Company
 from road.models import Road
 
 
@@ -28,37 +28,49 @@ class InputCreateRoadSerializer(serializers.Serializer):
         return data
 
 
-class _OutputAccountSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Account
-        fields = (
-            "oid",
-            "email",
-        )
-
-
-class _OutputCompanySerializer(serializers.ModelSerializer):
-    account = _OutputAccountSerializer(many=False)
-
-    class Meta:
-        model = Company
-        fields = (
-            "oid",
-            "name",
-            "account",
-            "created_at",
-        )
-
-
 class OutputCreateRoadSerializer(serializers.ModelSerializer):
-    company = _OutputCompanySerializer(many=False)
-
     class Meta:
         model = Road
         fields = (
             "oid",
             "name",
             "locations",
-            "company",
             "created_at",
         )
+
+
+class OutputRoadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Road
+        fields = (
+            "oid",
+            "name",
+            "locations",
+            "created_at",
+        )
+
+
+class InputUpdateRoadSerializer(serializers.Serializer):
+    oid = serializers.UUIDField()
+    name = serializers.CharField(allow_null=True)
+    locations = serializers.CharField(allow_null=True)
+
+    def validate(self, attrs):
+        if not Road.objects.filter(oid=attrs["oid"]).exists():
+            raise serializers.ValidationError(
+                "Road with given oid not found"
+            )
+
+        return attrs
+
+
+class InputDeleteRoadSerializer(serializers.Serializer):
+    road_oid = serializers.UUIDField()
+
+    def validate(self, attrs):
+        if not Road.objects.filter(oid=attrs["road_oid"]).exists():
+            raise serializers.ValidationError(
+                "Road with given oid not found"
+            )
+
+        return attrs

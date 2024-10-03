@@ -3,18 +3,17 @@ from rest_framework.request import HttpRequest
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from company.commands.login_commands import LoginCommand, LoginCommandHandler
-from company.commands.register_commands import (
+from company.commands import (
+    LoginCommand,
+    LoginCommandHandler,
     RegisterCompanyCommand,
     RegisterCompanyCommandHandler,
 )
-from company.serializers.login_serializers import (
+from company.serializers import (
     InputLoginSerializer,
-    OutputLoginSerializer,
-)
-from company.serializers.register_serializers import (
     InputRegisterCompanySerializer,
-    OutputRegisterCompanySerializer,
+    OutputCompanySerializer,
+    OutputLoginSerializer,
 )
 
 
@@ -30,7 +29,7 @@ class RegisterCompanyView(APIView):
         )
         company = RegisterCompanyCommandHandler.handle(command=command)
 
-        response_data = OutputRegisterCompanySerializer(company).data
+        response_data = OutputCompanySerializer(company).data
 
         return Response(response_data, status=status.HTTP_201_CREATED)
 

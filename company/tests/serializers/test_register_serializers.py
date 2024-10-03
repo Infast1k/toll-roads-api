@@ -2,9 +2,9 @@ from django.test import TestCase
 from django.utils.timezone import localtime
 
 from company.models import Account, Company
-from company.serializers.register_serializers import (
+from company.serializers import (
     InputRegisterCompanySerializer,
-    OutputRegisterCompanySerializer,
+    OutputCompanySerializer,
 )
 
 
@@ -77,7 +77,7 @@ class RegisterCompanySerializersTests(TestCase):
             account=account,
         )
 
-        output_serializer = OutputRegisterCompanySerializer(company).data
+        output_serializer = OutputCompanySerializer(company).data
 
         valid_output_test_data = {
             "oid": str(company.oid),

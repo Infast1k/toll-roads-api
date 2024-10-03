@@ -1,6 +1,6 @@
 from django.urls import path
 
-from road.views.road_views import RoadDetailView, RoadsView
+from road.views import RoadsView, RoadDetailView
 
 
 urlpatterns = [

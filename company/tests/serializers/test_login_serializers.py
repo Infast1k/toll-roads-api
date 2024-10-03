@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django.test import TestCase
 
 from company.models import Account
-from company.serializers.login_serializers import (
+from company.serializers import (
     InputLoginSerializer,
     OutputLoginSerializer,
 )

@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 
 class RegisterViewTest(APITestCase):
     def setUp(self):
-        self.url = "/api/v1/sign-up/"
+        self.url = "/api/v1/auth/sign-up/"
 
         self.valid_data = {
             "name": "Company name",

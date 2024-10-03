@@ -1,7 +1,7 @@
 from django.db.utils import IntegrityError
 from django.test import TestCase
 
-from company.commands.register_commands import (
+from company.commands import (
     RegisterCompanyCommand,
     RegisterCompanyCommandHandler,
 )

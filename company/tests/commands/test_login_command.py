@@ -3,11 +3,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.test import TestCase
 
-from company.commands.login_commands import (
-    AuthTokensCommand,
-    LoginCommand,
-    LoginCommandHandler,
-)
+from company.commands import AuthTokens, LoginCommand, LoginCommandHandler
 from company.models import Account
 
 
@@ -47,7 +43,7 @@ class LoginCommandTests(TestCase):
             password=self.valid_input_data.get("password"),
         )
 
-        result: AuthTokensCommand = LoginCommandHandler.handle(command=command)
+        result: AuthTokens = LoginCommandHandler.handle(command=command)
         refresh = cache.get(key=str(result.refresh_token))
 
         self.assertIsNotNone(result)

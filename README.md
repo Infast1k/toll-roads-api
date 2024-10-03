@@ -32,8 +32,3 @@
 * `make migr` - apply all made migrations
 * `make make-migr` - make migrations to models
 * `make superuser` - create admin user
-
-## TODO
-
-* Remake auth application (company)
-   * Change sub in JWT Token

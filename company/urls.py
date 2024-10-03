@@ -1,6 +1,6 @@
 from django.urls import path
 
-from company.views.auth_views import LoginCompanyView, RegisterCompanyView
+from company.views import LoginCompanyView, RegisterCompanyView
 
 
 urlpatterns = [
