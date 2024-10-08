@@ -20,7 +20,6 @@ from road.serializers import (
     InputCreateRoadSerializer,
     InputDeleteRoadSerializer,
     InputUpdateRoadSerializer,
-    OutputCreateRoadSerializer,
     OutputRoadSerializer,
 )
 
@@ -55,7 +54,7 @@ class RoadsView(APIView):
         )
         road = CreateRoadCommandHandler.handle(command=command)
 
-        response_data = OutputCreateRoadSerializer(road).data
+        response_data = OutputRoadSerializer(road).data
 
         return Response(response_data, status=status.HTTP_201_CREATED)
 

@@ -39,17 +39,6 @@ class InputCreateRoadSerializer(serializers.Serializer):
         return data
 
 
-class OutputCreateRoadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Road
-        fields = (
-            "oid",
-            "name",
-            "locations",
-            "created_at",
-        )
-
-
 class InputUpdateRoadSerializer(serializers.Serializer):
     road_oid = serializers.UUIDField()
     name = serializers.CharField(allow_null=True)
@@ -57,7 +46,12 @@ class InputUpdateRoadSerializer(serializers.Serializer):
     company_name = serializers.CharField()
 
     def validate(self, attrs):
-        company = Company.objects.get(name=attrs["company_name"])
+        company = Company.objects.filter(name=attrs["company_name"]).first()
+
+        if not company:
+            raise serializers.ValidationError(
+                "Company with given name not found"
+            )
 
         if not Road.objects.filter(
             oid=attrs["road_oid"],
@@ -75,7 +69,12 @@ class InputDeleteRoadSerializer(serializers.Serializer):
     company_name = serializers.CharField()
 
     def validate(self, attrs):
-        company = Company.objects.get(name=attrs["company_name"])
+        company = Company.objects.filter(name=attrs["company_name"]).first()
+
+        if not company:
+            raise serializers.ValidationError(
+                "Company with given name not found"
+            )
 
         if not Road.objects.filter(
             oid=attrs["road_oid"],
