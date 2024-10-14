@@ -1,11 +1,11 @@
 from django.test import TestCase
 
 from company.models import Account, Company
-from road.commands import GetAllRoadsCommand, GetAllRoadsCommandHandler
 from road.models import Road
+from road.services import RoadService
 
 
-class GetAllRoadsCommandHandlerTest(TestCase):
+class GetAllRoadsServiceMethodTest(TestCase):
     def setUp(self):
         self.account = Account.objects.create(
             email="testemail@mail.ru",
@@ -24,17 +24,16 @@ class GetAllRoadsCommandHandlerTest(TestCase):
         )
 
     def test_success_case(self):
-        command = GetAllRoadsCommand(company_name=self.company.name)
-        result = GetAllRoadsCommandHandler.handle(command=command)
+        result = RoadService.get_roads_by_company_name(
+            company_name=self.company.name,
+        )
 
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0], self.road)
 
     def test_invalid_case(self):
-        command = GetAllRoadsCommand(
+        result = RoadService.get_roads_by_company_name(
             company_name="does not exists company name",
         )
-
-        result = GetAllRoadsCommandHandler.handle(command=command)
 
         self.assertEqual(len(result), 0)

@@ -2,11 +2,11 @@ from uuid import uuid4
 from django.test import TestCase
 
 from company.models import Account, Company
-from road.commands import UpdateRoadCommand, UpdateRoadCommandHandler
 from road.models import Road
+from road.services import RoadService
 
 
-class UpdateRoadCommandHandlerTest(TestCase):
+class UpdateRoadServiceMethodTest(TestCase):
     def setUp(self):
         self.account = Account.objects.create(
             email="testemail@mail.ru",
@@ -74,42 +74,28 @@ class UpdateRoadCommandHandlerTest(TestCase):
         ]
 
     def test_valid_case(self):
-        commands: list[UpdateRoadCommand] = []
-
-        for data in self.valid_input_data:
-            commands.append(
-                UpdateRoadCommand(
-                    road_oid=data.get("road_oid"),
-                    name=data.get("road_name"),
-                    locations=data.get("road_locations"),
-                    company_name=data.get("company_name"),
-                )
+        for case in self.valid_input_data:
+            result = RoadService.update_road(
+                road_oid=case.get("road_oid"),
+                road_name=case.get("road_name"),
+                road_locations=case.get("road_locations"),
+                company_name=case.get("company_name"),
             )
 
-        for command in commands:
-            result: Road = UpdateRoadCommandHandler.handle(command=command)
+            self.assertEqual(result.oid, case.get("road_oid"))
+            self.assertEqual(result.company.name, case.get("company_name"))
 
-            self.assertEqual(result.oid, command.road_oid)
-            self.assertEqual(result.company.name, command.company_name)
-
-            if command.name is not None:
-                self.assertEqual(result.name, command.name)
-            if command.locations is not None:
-                self.assertEqual(result.locations, command.locations)
+            if case.get("road_name") is not None:
+                self.assertEqual(result.name, case.get("road_name"))
+            if case.get("road_locations") is not None:
+                self.assertEqual(result.locations, case.get("road_locations"))
 
     def test_invalid_case(self):
-        wrong_commands = []
-
-        for data in self.invalid_input_data:
-            wrong_commands.append(
-                UpdateRoadCommand(
-                    road_oid=data.get("road_oid"),
-                    name=data.get("road_name"),
-                    locations=data.get("road_locations"),
-                    company_name=data.get("company_name"),
-                )
-            )
-
-        for command in wrong_commands:
+        for case in self.invalid_input_data:
             with self.assertRaises(Road.DoesNotExist):
-                UpdateRoadCommandHandler.handle(command=command)
+                RoadService.update_road(
+                    road_oid=case.get("road_oid"),
+                    road_name=case.get("road_name"),
+                    road_locations=case.get("road_locations"),
+                    company_name=case.get("company_name"),
+                )

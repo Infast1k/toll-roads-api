@@ -1,11 +1,11 @@
 from django.test import TestCase
 
 from company.models import Account, Company
-from road.commands import CreateRoadCommand, CreateRoadCommandHandler
 from road.models import Road
+from road.services import RoadService
 
 
-class CreateRoadCommandHandlerTest(TestCase):
+class CreateRoadServiceMethodTest(TestCase):
     def setUp(self):
         self.account = Account.objects.create(
             email="testemail@mail.ru",
@@ -48,13 +48,11 @@ class CreateRoadCommandHandlerTest(TestCase):
         ]
 
     def test_valid_case(self):
-        command = CreateRoadCommand(
+        result = RoadService.create_road(
             road_name=self.valid_input_data.get("road_name"),
             road_locations=self.valid_input_data.get("road_locations"),
             company_name=self.valid_input_data.get("company_name"),
         )
-
-        result = CreateRoadCommandHandler.handle(command=command)
 
         self.assertIsNotNone(result)
         self.assertEqual(result.name, self.valid_input_data.get("road_name"))
@@ -65,17 +63,10 @@ class CreateRoadCommandHandlerTest(TestCase):
         self.assertEqual(result.company, self.company)
 
     def test_invalid_case(self):
-        wrong_commands = []
-
-        for data in self.invalid_input_data:
-            wrong_commands.append(
-                CreateRoadCommand(
-                    road_name=data.get("road_name"),
-                    road_locations=data.get("road_locations"),
-                    company_name=data.get("company_name"),
-                )
-            )
-
-        for command in wrong_commands:
+        for case in self.invalid_input_data:
             with self.assertRaises(Exception):
-                CreateRoadCommandHandler.handle(command=command)
+                RoadService.create_road(
+                    road_name=case.get("road_name"),
+                    road_locations=case.get("road_locations"),
+                    company_name=case.get("company_name"),
+                )

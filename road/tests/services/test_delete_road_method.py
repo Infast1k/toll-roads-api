@@ -2,11 +2,11 @@ from uuid import uuid4
 from django.test import TestCase
 
 from company.models import Account, Company
-from road.commands import DeleteRoadByOidCommand, DeleteRoadByOidCommandHandler
 from road.models import Road
+from road.services import RoadService
 
 
-class DeleteRoadByOidCommandHandlerTest(TestCase):
+class DeleteRoadByOidServiceMethodTest(TestCase):
     def setUp(self):
         self.account = Account.objects.create(
             email="testemail@mail.ru",
@@ -36,12 +36,10 @@ class DeleteRoadByOidCommandHandlerTest(TestCase):
         ]
 
     def test_valid_case(self):
-        command = DeleteRoadByOidCommand(
+        result = RoadService.delete_road_by_oid(
             road_oid=self.road.oid,
             company_name=self.company.name,
         )
-
-        result = DeleteRoadByOidCommandHandler.handle(command=command)
 
         self.assertIsNone(result)
         self.assertEqual(
@@ -50,18 +48,11 @@ class DeleteRoadByOidCommandHandlerTest(TestCase):
         self.assertEqual(Road.objects.count(), 0)
 
     def test_invalid_case(self):
-        wrong_commands = []
-
-        for data in self.invalid_input_data:
-            wrong_commands.append(
-                DeleteRoadByOidCommand(
-                    road_oid=data.get("road_oid"),
-                    company_name=data.get("company_name"),
+        for case in self.invalid_input_data:
+            with self.assertRaises(Road.DoesNotExist):
+                RoadService.delete_road_by_oid(
+                    road_oid=case.get("road_oid"),
+                    company_name=case.get("company_name"),
                 )
-            )
-
-        for command in wrong_commands:
-            with self.assertRaises(Exception):
-                DeleteRoadByOidCommandHandler.handle(command=command)
 
         self.assertEqual(Road.objects.count(), 1)
