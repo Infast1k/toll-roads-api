@@ -53,7 +53,7 @@ class LoginViewTest(APITestCase):
             password=make_password(self.valid_data.get("password")),
         )
 
-    def test_successfully_register_view(self):
+    def test_successfully_login_view(self):
         response = self.client.post(
             self.url,
             self.valid_data,

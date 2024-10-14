@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from company.commands import AuthTokens, LoginCommand, LoginCommandHandler
 from company.models import Account
+from company.services import JWTService
 
 
 class RefreshViewTest(APITestCase):
@@ -14,17 +14,10 @@ class RefreshViewTest(APITestCase):
             password="password",
         )
 
-        self.login_command = LoginCommand(
-            email=self.account.email,
-            password=self.account.password,
-        )
-
-        self.tokens: AuthTokens = LoginCommandHandler.handle(
-            command=self.login_command,
-        )
+        self.tokens = JWTService.generate_tokens(account_oid=self.account.oid)
 
         self.valid_input_data = {
-            "refresh_token": self.tokens.refresh_token,
+            "refresh_token": self.tokens.get("refresh_token"),
         }
 
         self.invalid_input_data = {
@@ -38,10 +31,10 @@ class RefreshViewTest(APITestCase):
         self.assertIsNotNone(response.data.get("access_token"))
         self.assertIsNotNone(response.data.get("refresh_token"))
 
-        new_tokens: AuthTokens = AuthTokens(
-            access_token=response.data.get("access_token"),
-            refresh_token=response.data.get("refresh_token"),
-        )
+        new_tokens = {
+            "access_token": response.data.get("access_token"),
+            "refresh_token": response.data.get("refresh_token"),
+        }
 
         self.assertNotEqual(
             self.tokens,
