@@ -11,6 +11,7 @@ from road.serializers import (
     InputDeleteRoadSerializer,
     InputUpdateRoadSerializer,
     OutputRoadSerializer,
+    OutputRoadsWithPaginationSerializer,
 )
 from road.services import BaseRoadService, RoadService
 
@@ -22,11 +23,19 @@ class RoadsView(APIView):
     def get(self, request: HttpRequest) -> Response:
         company_name = request.user.company.name
 
+        limit = int(request.GET.get("limit", 5))
+        offset = int(request.GET.get("offset", 0))
+
         roads = self.road_service.get_roads_by_company_name(
             company_name=company_name,
         )
 
-        response_data = OutputRoadSerializer(roads, many=True).data
+        roads_with_pagination = {
+            "roads": roads[offset: offset+limit],
+            "total": roads.count(),
+        }
+
+        response_data = OutputRoadsWithPaginationSerializer(roads_with_pagination).data
 
         return Response(response_data, status=status.HTTP_200_OK)
 

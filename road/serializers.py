@@ -15,6 +15,11 @@ class OutputRoadSerializer(serializers.ModelSerializer):
         )
 
 
+class OutputRoadsWithPaginationSerializer(serializers.Serializer):
+    roads = OutputRoadSerializer(many=True)
+    total = serializers.IntegerField()
+
+
 class InputCreateRoadSerializer(serializers.Serializer):
     road_name = serializers.CharField()
     road_locations = serializers.CharField()
