@@ -1,5 +1,3 @@
-from abc import ABC, abstractmethod
-from typing import Optional
 from uuid import UUID
 
 from django.db.models.query import QuerySet
@@ -8,37 +6,7 @@ from company.models import Company
 from road.models import Road
 
 
-class BaseRoadService(ABC):
-    @classmethod
-    @abstractmethod
-    def get_roads_by_company_name(cls, company_name: str) -> QuerySet[Road]:
-        ...
-
-    @classmethod
-    @abstractmethod
-    def create_road(
-        cls, road_name: str, road_locations: str, company_name: str
-    ) -> Road:
-        ...
-
-    @classmethod
-    @abstractmethod
-    def update_road(
-        cls,
-        road_oid: UUID,
-        road_name: Optional[str],
-        road_locations: Optional[str],
-        company_name: str,
-    ) -> Road:
-        ...
-
-    @classmethod
-    @abstractmethod
-    def delete_road_by_oid(cls, road_oid: UUID, company_name: str) -> None:
-        ...
-
-
-class RoadService(BaseRoadService):
+class RoadService:
     @classmethod
     def get_roads_by_company_name(cls, company_name: str) -> QuerySet[Road]:
         roads = Road.objects.filter(company__name=company_name)

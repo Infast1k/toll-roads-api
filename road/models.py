@@ -1,6 +1,6 @@
 from django.db import models
 
-from core.base.models import BaseModel
+from core.models import BaseModel
 
 
 class Road(BaseModel):

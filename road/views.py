@@ -13,12 +13,12 @@ from road.serializers import (
     OutputRoadSerializer,
     OutputRoadsWithPaginationSerializer,
 )
-from road.services import BaseRoadService, RoadService
+from road.services import RoadService
 
 
 class RoadsView(APIView):
     permission_classes = (IsAuthenticated,)
-    road_service: BaseRoadService = RoadService
+    road_service = RoadService
 
     def get(self, request: HttpRequest) -> Response:
         company_name = request.user.company.name
@@ -62,7 +62,7 @@ class RoadsView(APIView):
 
 class RoadDetailView(APIView):
     permission_classes = (IsAuthenticated,)
-    road_service: BaseRoadService = RoadService
+    road_service = RoadService
 
     def put(self, request: HttpRequest, road_oid: UUID) -> Response:
         company_name = request.user.company.name

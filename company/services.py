@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from uuid import UUID, uuid4
 
@@ -10,19 +9,7 @@ from django.core.cache import cache
 from company.models import Account, Company
 
 
-class BaseAccountService(ABC):
-    @classmethod
-    @abstractmethod
-    def get_account_by_email(cls, email) -> Account:
-        ...
-
-    @classmethod
-    @abstractmethod
-    def create_account(cls, email: str, password: str) -> Account:
-        ...
-
-
-class AccountService(BaseAccountService):
+class AccountService:
     @classmethod
     def get_account_by_email(cls, email) -> Account:
         account = Account.objects.get(email=email)
@@ -39,14 +26,7 @@ class AccountService(BaseAccountService):
         return account
 
 
-class BaseCompanyService(ABC):
-    @classmethod
-    @abstractmethod
-    def create_company(cls, company_name: str, account: Account) -> Company:
-        ...
-
-
-class CompanyService(BaseCompanyService):
+class CompanyService:
     @classmethod
     def create_company(cls, company_name: str, account: Account) -> Company:
         company = Company.objects.create(
@@ -57,19 +37,7 @@ class CompanyService(BaseCompanyService):
         return company
 
 
-class BaseJWTService(ABC):
-    @classmethod
-    @abstractmethod
-    def generate_tokens(cls, account_oid: UUID) -> dict[str, str | UUID]:
-        ...
-
-    @classmethod
-    @abstractmethod
-    def refresh_tokens(cls, refresh_token: UUID) -> dict[str, str | UUID]:
-        ...
-
-
-class JWTService(BaseJWTService):
+class JWTService:
     @classmethod
     def generate_tokens(cls, account_oid: UUID) -> dict[str, str | UUID]:
         access_token = jwt.encode(

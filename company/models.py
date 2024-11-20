@@ -3,7 +3,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 
 from company.managers import AccountManager
-from core.base.models import BaseModel
+from core.models import BaseModel
 
 
 class Account(BaseModel, AbstractBaseUser, PermissionsMixin):
@@ -13,7 +13,6 @@ class Account(BaseModel, AbstractBaseUser, PermissionsMixin):
         unique=True,
         db_index=True,
     )
-    # TODO: change is_active to false after adding email verification
     is_active = models.BooleanField(
         blank=True,
         default=True,

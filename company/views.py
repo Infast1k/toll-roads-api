@@ -11,19 +11,12 @@ from company.serializers import (
     OutputCompanySerializer,
     OutputLoginSerializer,
 )
-from company.services import (
-    AccountService,
-    BaseAccountService,
-    BaseCompanyService,
-    BaseJWTService,
-    CompanyService,
-    JWTService,
-)
+from company.services import AccountService, CompanyService, JWTService
 
 
 class RegisterCompanyView(APIView):
-    account_service: BaseAccountService = AccountService
-    company_service: BaseCompanyService = CompanyService
+    account_service = AccountService
+    company_service = CompanyService
 
     def post(self, request: HttpRequest) -> Response:
         company_serializer = InputRegisterCompanySerializer(data=request.data)
@@ -49,8 +42,8 @@ class RegisterCompanyView(APIView):
 
 
 class LoginCompanyView(APIView):
-    account_service: BaseAccountService = AccountService
-    jwt_service: BaseJWTService = JWTService
+    account_service = AccountService
+    jwt_service = JWTService
 
     def post(self, request: HttpRequest) -> Response:
         login_serializer = InputLoginSerializer(data=request.data)
@@ -67,7 +60,7 @@ class LoginCompanyView(APIView):
 
 
 class RefreshTokensView(APIView):
-    jwt_service: BaseJWTService = JWTService
+    jwt_service = JWTService
 
     def post(self, request: HttpRequest) -> Response:
         refresh_serializer = InputRefreshSerializer(data=request.data)
