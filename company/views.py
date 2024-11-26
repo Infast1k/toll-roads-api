@@ -1,5 +1,6 @@
 from django.db import transaction
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import HttpRequest
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -72,4 +73,15 @@ class RefreshTokensView(APIView):
 
         response_data = OutputLoginSerializer(tokens).data
 
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+class Profile(APIView):
+    company_service = CompanyService
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request: HttpRequest) -> Response:
+        company_oid = request.user.company.oid
+        company = self.company_service.get_company_by_oid(oid=company_oid)
+        response_data = OutputCompanySerializer(company).data
         return Response(response_data, status=status.HTTP_200_OK)

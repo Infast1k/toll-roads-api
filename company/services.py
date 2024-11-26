@@ -28,6 +28,12 @@ class AccountService:
 
 class CompanyService:
     @classmethod
+    def get_company_by_oid(cls, oid: UUID) -> Company:
+        company = Company.objects.get(oid=oid)
+
+        return company
+
+    @classmethod
     def create_company(cls, company_name: str, account: Account) -> Company:
         company = Company.objects.create(
             name=company_name,
