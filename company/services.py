@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Optional
 from uuid import UUID, uuid4
 
 import jwt
@@ -25,6 +26,16 @@ class AccountService:
 
         return account
 
+    @classmethod
+    def update_account(cls, account_oid: UUID, email: Optional[str]) -> Account:
+        account = Account.objects.get(oid=account_oid)
+
+        if email is not None:
+            account.email = email
+        account.save()
+
+        return account
+
 
 class CompanyService:
     @classmethod
@@ -39,6 +50,16 @@ class CompanyService:
             name=company_name,
             account=account,
         )
+
+        return company
+
+    @classmethod
+    def update_company(cls, company_oid: UUID, company_name: Optional[str]) -> Company:
+        company = cls.get_company_by_oid(oid=company_oid)
+
+        if company_name is not None:
+            company.name = company_name
+        company.save()
 
         return company
 

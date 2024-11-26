@@ -9,6 +9,7 @@ from company.serializers import (
     InputLoginSerializer,
     InputRefreshSerializer,
     InputRegisterCompanySerializer,
+    InputUpdateCompanySerializer,
     OutputCompanySerializer,
     OutputLoginSerializer,
 )
@@ -77,6 +78,7 @@ class RefreshTokensView(APIView):
 
 
 class Profile(APIView):
+    account_service = AccountService
     company_service = CompanyService
     permission_classes = (IsAuthenticated,)
 
@@ -85,6 +87,26 @@ class Profile(APIView):
         company = self.company_service.get_company_by_oid(oid=company_oid)
         response_data = OutputCompanySerializer(company).data
         return Response(response_data, status=status.HTTP_200_OK)
+
+    def put(self, request: HttpRequest) -> Response:
+        company_serializer = InputUpdateCompanySerializer(data=request.data)
+        company_serializer.is_valid(raise_exception=True)
+
+        with transaction.atomic():
+            self.account_service.update_account(
+                account_oid=request.user.company.account.oid,
+                email=company_serializer.validated_data.get("account", {}).get("email", None),
+            )
+
+            company = self.company_service.update_company(
+                company_oid=request.user.company.oid,
+                company_name=company_serializer.validated_data.get("name", None),
+            )
+
+        response_data = OutputCompanySerializer(company).data
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
 
     def delete(self, request: HttpRequest) -> Response:
         company_oid = request.user.company.oid
