@@ -13,6 +13,13 @@ class RoadService:
         return roads
 
     @classmethod
+    def get_road_by_oid(cls, road_oid: UUID, company_name: str) -> Road:
+        company_roads = Road.objects.filter(company__name=company_name)
+        road = company_roads.get(oid=road_oid)
+
+        return road
+
+    @classmethod
     def create_road(
         cls, road_name: str, road_locations: str, company_name: str
     ) -> Road:
@@ -47,7 +54,5 @@ class RoadService:
 
     @classmethod
     def delete_road_by_oid(cls, road_oid: UUID, company_name: str) -> None:
-        company_roads = Road.objects.filter(company__name=company_name)
-        road = company_roads.get(oid=road_oid)
-
+        road = cls.get_road_by_oid(road_oid=road_oid, company_name=company_name)
         road.delete()

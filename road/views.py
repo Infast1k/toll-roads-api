@@ -64,6 +64,18 @@ class RoadDetailView(APIView):
     permission_classes = (IsAuthenticated,)
     road_service = RoadService
 
+    def get(self, request: HttpRequest, road_oid: UUID) -> Response:
+        company_name = request.user.company.name
+
+        road = self.road_service.get_road_by_oid(
+            road_oid=road_oid,
+            company_name=company_name,
+        )
+
+        response_data = OutputRoadSerializer(road).data
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
     def put(self, request: HttpRequest, road_oid: UUID) -> Response:
         company_name = request.user.company.name
 
