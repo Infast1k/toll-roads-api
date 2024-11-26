@@ -42,6 +42,11 @@ class CompanyService:
 
         return company
 
+    @classmethod
+    def delete_company_by_oid(cls, oid: UUID) -> None:
+        company = cls.get_company_by_oid(oid=oid)
+        company.account.delete()
+
 
 class JWTService:
     @classmethod

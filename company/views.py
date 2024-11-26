@@ -85,3 +85,9 @@ class Profile(APIView):
         company = self.company_service.get_company_by_oid(oid=company_oid)
         response_data = OutputCompanySerializer(company).data
         return Response(response_data, status=status.HTTP_200_OK)
+
+    def delete(self, request: HttpRequest) -> Response:
+        company_oid = request.user.company.oid
+        self.company_service.delete_company_by_oid(oid=company_oid)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
