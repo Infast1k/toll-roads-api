@@ -66,6 +66,7 @@ class OutputCompanySerializer(serializers.ModelSerializer):
         fields = (
             "oid",
             "name",
+            "tokens",
             "account",
             "created_at",
         )

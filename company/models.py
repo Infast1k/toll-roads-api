@@ -47,6 +47,7 @@ class Company(BaseModel):
         unique=True,
         db_index=True,
     )
+    tokens = models.PositiveSmallIntegerField(default=3)
     account = models.OneToOneField(
         to=Account,
         on_delete=models.CASCADE,
